@@ -3,16 +3,13 @@ import { supabase } from "../../lib/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-const UserProfile = ({ userId }) => {
-  const [profileData, setProfileData] = useState(null);
-  const [avatarUrl, setAvatarUrl] = useState(null);
+const EditProfile = ({ userId }) => {
   const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState(""); // Email fetched from the auth session
-  
+  const [email, setEmail] = useState("");
   const [profilePicture, setProfilePicture] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [image, setImage] = useState(null); // State to store uploaded image
-  const [preview, setPreview] = useState(null); // State to store image preview URL
+  const [image, setImage] = useState(null);
+  const [preview, setPreview] = useState(null);
 
   useEffect(() => {
     fetchProfile();
@@ -21,7 +18,6 @@ const UserProfile = ({ userId }) => {
 
   const fetchProfile = async () => {
     try {
-      // Fetch authenticated user's email
       const { data: { session } } = await supabase.auth.getSession();
       const userEmail = session?.user?.email;
 
@@ -38,9 +34,8 @@ const UserProfile = ({ userId }) => {
 
       if (error) throw error;
 
-      setProfileData(data);
       setFullName(data?.full_name || "");
-      setEmail(userEmail || data?.email || ""); // Set the email from the auth session or the profile
+      setEmail(userEmail || data?.email || "");
     } catch (error) {
       console.error("Error fetching profile:", error.message);
     }
@@ -57,7 +52,6 @@ const UserProfile = ({ userId }) => {
       }
 
       if (data.publicUrl) {
-        setAvatarUrl(data.publicUrl);
         setPreview(data.publicUrl);
       }
     } catch (error) {
@@ -88,13 +82,12 @@ const UserProfile = ({ userId }) => {
         return;
       }
 
-      // Upsert the profile with the user's email
       const { error } = await supabase
         .from("profiles")
         .upsert({
           id: userId,
           full_name: fullName,
-          email: userEmail, // Ensure email is set from the auth session
+          email: userEmail,
         });
 
       if (error) throw error;
@@ -122,7 +115,7 @@ const UserProfile = ({ userId }) => {
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="w-full max-w-lg p-8 bg-white shadow-lg rounded-lg">
         <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
-          Your Profile
+          Edit Profile
         </h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -135,7 +128,7 @@ const UserProfile = ({ userId }) => {
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               placeholder="John Doe"
-              className="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 w-full border-gray-300 rounded-md shadow-sm"
               required
             />
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -144,18 +137,17 @@ const UserProfile = ({ userId }) => {
             <Input
               type="email"
               id="email"
-              value={email} // Display the fetched email
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="john.doe@example.com"
-              className="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-              // disabled // Disable the email field if you don't want the user to edit it
+              className="mt-1 w-full border-gray-300 rounded-md shadow-sm"
               required
             />
           </div>
           <div>
             <label
               htmlFor="uploadImage"
-              className="cursor-pointer flex items-center justify-center w-64 h-64 bg-gray-200 rounded-lg shadow-md hover:bg-gray-300 focus:outline-none"
+              className="cursor-pointer flex items-center justify-center w-64 h-64 bg-gray-200 rounded-lg shadow-md hover:bg-gray-300"
               style={{
                 backgroundImage: preview ? `url(${preview})` : "none",
                 backgroundSize: "cover",
@@ -181,7 +173,7 @@ const UserProfile = ({ userId }) => {
           <div>
             <Button
               type="submit"
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-indigo-600"
               disabled={loading}
             >
               {loading ? "Saving..." : "Save Profile"}
@@ -193,4 +185,4 @@ const UserProfile = ({ userId }) => {
   );
 };
 
-export default UserProfile;
+export default EditProfile;

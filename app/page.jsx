@@ -1,9 +1,11 @@
 "use client"
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/client'
-import ProfileForm from './components/ProfileForm'
+import ProfileForm from './components/EditProfile'
 // import SocialMediaForm from './components/SocialMediaForm'
-import UserProfile from './components/ProfileForm'
+import UserProfile from './components/EditProfile'
+import EditProfile from './components/EditProfile'
+import DisplayProfile from "./components/DisplayProfile"
 import AddLinkComponent from "./components/AddLinkComponent"
 
 import DisplayLinksComponent from "./components/DisplayLinkComponent";
@@ -12,7 +14,11 @@ import { useRouter } from "next/navigation";
 const HomePage = () => {
   const [userId, setUserId] = useState(null)
   const [userLinks, setUserLinks] = useState([]);
+  const [isEditing, setIsEditing] = useState(true);
 
+  const handleToggleEdit = () => {
+    setIsEditing(!isEditing);
+  };
   const router = useRouter(); 
   useEffect(() => {
     const getUserInfo = async () => {
@@ -57,21 +63,7 @@ const HomePage = () => {
 
       {userId ? (
         <>
-          <section className="mb-12">
-            <h2 className="text-xl font-semibold mb-4">Update Your Profile</h2>
-            {/* <ProfileForm userId={userId} /> */}
-          </section>
-
-          <section className="mb-12">
-            <h2 className="text-xl font-semibold mb-4">Add Social Media Accounts</h2>
-            {/* <AddLinkComponent userId={userId} /> */}
-          </section>
-
-          <section>
-            <h2 className="text-xl font-semibold mb-4">Your Profile Information</h2>
-            {/* <UserProfile userId={userId} /> */}
-            {/* <DisplaySocialMedia userId={userId} /> */}
-          </section>
+         
           <div>
       <AddLinkComponent userId={userId} fetchUserLinks={fetchUserLinks} />
       <DisplayLinksComponent userLinks={userLinks} />
@@ -85,6 +77,18 @@ const HomePage = () => {
       {userId && (
         <LogoutButton>Sign Out</LogoutButton>
       )}
+      {isEditing && (
+          <>
+            <EditProfile userId={userId} />
+            <button
+              onClick={handleToggleEdit}
+              className="mt-4 bg-gray-600 text-white px-4 py-2 rounded-md"
+            >
+              Cancel
+            </button>
+          </>
+         ) }
+  
     </div>
   )
 }
