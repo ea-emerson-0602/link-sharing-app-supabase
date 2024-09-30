@@ -14,11 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={``}
-      >
-        {children}
-      </body>
+      <body className={`text-primaryText`}>{children}</body>
     </html>
   );
 }

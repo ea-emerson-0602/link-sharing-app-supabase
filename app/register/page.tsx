@@ -2,12 +2,19 @@
 import { useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/client";
-import { FaEnvelope, FaLock } from "react-icons/fa";
+import { FaEnvelope, FaEye, FaEyeSlash, FaLock } from "react-icons/fa";
+import logo from "../assets/logo.svg";
+import Image from "next/image";
 
 const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  // Separate states to toggle password visibility for each field
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const [errors, setErrors] = useState({
     email: "",
     password: "",
@@ -76,77 +83,83 @@ const Register = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
-        <div className="flex justify-center mb-8">
-          {/* Icon/logo */}
-          <img src="/devlinks-logo.svg" alt="Devlinks Logo" className="h-12" />
-        </div>
-        <h2 className="text-3xl font-bold text-center text-gray-900 mb-2">
-          Create account
-        </h2>
-        <p className="text-center text-gray-600 mb-6">
+    <div className="flex flex-col space-y-10 items-center justify-center min-h-screen px-8 bg-white md:bg-primaryBg">
+      {/* Logo and Title */}
+      <div className="flex w-full items-center md:justify-center space-x-2 mb-6 sm:mb-8">
+        <Image
+          src={logo}
+          alt="logo"
+          width={36}
+          height={36}
+          className="sm:w-10 sm:h-10"
+        />
+        <span className="font-bold md:text-center text-3xl">devlinks</span>
+      </div>
+      <div className="w-full max-w-sm sm:max-w-md md:p-6 md:px-6 bg-white rounded-lg md:shadow-lg">
+        {/* Title */}
+        <h2 className="text-2xl lg:text-3xl font-bold mb-3">Create account</h2>
+        <p className="mb-4 sm:mb-6 text-secondaryText text-sm">
           Let's get you started sharing your links!
         </p>
         {message && (
           <p className="text-green-500 text-center mt-4">{message}</p>
         )}
-        <form onSubmit={handleRegister} className="space-y-6">
+       <form onSubmit={handleRegister} className="space-y-5 sm:space-y-8">
           {/* Email Input */}
           <div className="relative">
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="email" className="block font-medium text-xs text-primaryText">
               Email address
             </label>
-            <div className="relative mt-1">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FaEnvelope className="text-gray-400" />
-              </div>
+            <div className="relative mt-1 flex items-center">
+              <FaEnvelope className="absolute left-3 text-gray-400" />
               <input
                 type="email"
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className={`block w-full pl-10 pr-3 py-2 text-xs border ${
-                  errors.email ? "border-red-500" : "border-gray-300"
-                } rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                  errors.email ? "border-error" : "border-gray-300"
+                } rounded-lg shadow-sm focus:outline-none focus:ring-primaryPurple focus:border-primaryPurple sm:text-sm`}
                 placeholder="e.g. alex@email.com"
                 required
               />
             </div>
             {errors.email && (
-              <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+              <p className="text-error text-xs mt-1">{errors.email}</p>
             )}
           </div>
 
           {/* Password Input */}
           <div className="relative">
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="password" className="block text-sm font-medium ">
               Create password
             </label>
-            <div className="relative mt-1">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FaLock className="text-gray-400" />
-              </div>
+            <div className="relative mt-1 flex items-center">
+              <FaLock className="text-gray-400 left-3 absolute" />
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className={`block w-full pl-10 pr-3 py-2 text-xs border ${
-                  errors.password ? "border-red-500" : "border-gray-300"
-                } rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                  errors.password ? "border-error" : "border-sec"
+                } rounded-lg shadow-sm focus:outline-none focus:ring-primaryPurple focus:border-primaryPurple sm:text-sm`}
                 placeholder="At least 8 characters"
                 required
               />
+              <div
+                className="absolute right-3 cursor-pointer"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <FaEyeSlash className="text-gray-500" />
+                ) : (
+                  <FaEye className="text-gray-500" />
+                )}
+              </div>
             </div>
             {errors.password && (
-              <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+              <p className="text-error text-xs mt-1">{errors.password}</p>
             )}
           </div>
 
@@ -154,28 +167,36 @@ const Register = () => {
           <div className="relative">
             <label
               htmlFor="confirm-password"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium "
             >
               Confirm password
             </label>
-            <div className="relative mt-1">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FaLock className="text-gray-400" />
-              </div>
+            <div className="relative mt-1 flex items-center">
+              <FaLock className="text-gray-400 left-3 absolute" />
               <input
-                type="password"
+                type={showConfirmPassword ? "text" : "password"}
                 id="confirm-password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className={`block w-full pl-10 pr-3 py-2 text-xs border ${
-                  errors.confirmPassword ? "border-red-500" : "border-gray-300"
-                } rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                  errors.confirmPassword ? "border-error" : "border-gray-300"
+                } rounded-lg shadow-sm focus:outline-none focus:ring-primaryPurple focus:border-primaryPurple sm:text-sm`}
                 placeholder="At least 8 characters"
                 required
               />
+              <div
+                className="absolute right-3 cursor-pointer"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? (
+                  <FaEyeSlash className="text-gray-500" />
+                ) : (
+                  <FaEye className="text-gray-500" />
+                )}
+              </div>
             </div>
             {errors.confirmPassword && (
-              <p className="text-red-500 text-xs mt-1">
+              <p className="text-error text-xs mt-1">
                 {errors.confirmPassword}
               </p>
             )}
@@ -183,17 +204,17 @@ const Register = () => {
 
           <button
             type="submit"
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#7A3FED] hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primaryPurple hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primaryPurple"
           >
             Create new account
           </button>
         </form>
         <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-secondaryText">
             Already have an account?{" "}
             <Link
               href="/login"
-              className="font-medium text-[#7A3FED] hover:underline"
+              className="font-medium text-primaryPurple hover:underline"
             >
               Login
             </Link>
