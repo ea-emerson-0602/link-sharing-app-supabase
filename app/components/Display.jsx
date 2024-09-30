@@ -1,17 +1,20 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "../../lib/client";
+
 import { User } from "lucide-react";
 
-const DisplayProfile = ({ userId }) => {
+const DisplayProfile = ({ userId, updatedProfilePicture }) => {
   const [profileData, setProfileData] = useState(null);
   const [avatarUrl, setAvatarUrl] = useState(null);
+  
   const [loading, setLoading] = useState(true);
+  
   const [imageValid, setImageValid] = useState(false);
 
   useEffect(() => {
     fetchProfile();
     fetchAvatarUrl();
-  }, [userId]);
+  }, [userId, updatedProfilePicture]);
 
   useEffect(() => {
     if (avatarUrl) {
@@ -29,7 +32,9 @@ const DisplayProfile = ({ userId }) => {
         .select("*")
         .eq("id", userId)
         .single();
+
       if (error) throw error;
+
       setProfileData(data);
     } catch (error) {
       console.error("Error fetching profile:", error.message);
@@ -40,16 +45,21 @@ const DisplayProfile = ({ userId }) => {
 
   const fetchAvatarUrl = async () => {
     try {
-      const { data, error } = supabase.storage
-        .from("avatar")
-        .getPublicUrl(`public/${userId}/avatar.png`);
-      if (error && error.status !== 404) throw error;
+      if (updatedProfilePicture) {
+        setAvatarUrl(updatedProfilePicture);
+      } else {
+        const { data, error } = supabase.storage
+          .from("avatar")
+          .getPublicUrl(`public/${userId}/avatar.png`);
 
-      // Append a timestamp to ensure the browser fetches the latest image, not the cached one
-      const avatarUrlWithTimestamp = data?.publicUrl
-        ? `${data.publicUrl}?t=${Date.now()}`
-        : null;
-      setAvatarUrl(avatarUrlWithTimestamp);
+        if (error && error.status !== 404) {
+          throw error;
+        }
+
+        if (data.publicUrl) {
+          setAvatarUrl(`${data.publicUrl}?t=${Date.now()}`);
+        }
+      }
     } catch (error) {
       console.error("Error fetching avatar URL:", error.message);
     }
@@ -63,7 +73,7 @@ const DisplayProfile = ({ userId }) => {
         aria-label="Profile Picture"
       />
     ) : (
-      <div className="w-28 h-28 bg-gray-200 rounded-full mx-auto flex items-center justify-center">
+      <div className="w-28 h-28 bg-secondaryBg rounded-full mx-auto flex items-center justify-center">
         <User size={48} className="text-gray-400" />
       </div>
     );
@@ -72,7 +82,7 @@ const DisplayProfile = ({ userId }) => {
     value ? (
       <div className={`${className}`}>{value}</div>
     ) : (
-      <div className="w-40 h-5 bg-gray-200 rounded mx-auto">
+      <div className="w-40 h-5 bg-secondaryBg rounded mx-auto">
         <span className="sr-only">{placeholder}</span>
       </div>
     );
@@ -93,24 +103,25 @@ const DisplayProfile = ({ userId }) => {
     );
   }
 
+
   return (
     <div className="flex items-center justify-center px-4">
-      <div className="w-full max-w-lg px-4 py-4 sm:px-28">
-        <div className="space-y-4 text-center">
-          <ProfilePicture />
-          <ProfileDetail
-            className="text-2xl font-bold"
-            value={profileData?.full_name}
-            placeholder="Full name not set"
-          />
-          <ProfileDetail
-            value={profileData?.email}
-            className="text-sm"
-            placeholder="Email not set"
-          />
-        </div>
+    <div className="w-full max-w-lg px-4 py-4 sm:px-28">
+      <div className="space-y-4 text-center">
+        <ProfilePicture />
+        <ProfileDetail
+          className="text-2xl font-bold"
+          value={profileData?.full_name}
+          placeholder="Full name not set"
+        />
+        <ProfileDetail
+          value={profileData?.email}
+          className="text-sm"
+          placeholder="Email not set"
+        />
       </div>
     </div>
+  </div>
   );
 };
 

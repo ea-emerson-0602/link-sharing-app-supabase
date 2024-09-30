@@ -24,46 +24,47 @@ const UserProfile = ({ userId, onProfileUpdate }) => {
 
   const [profileUpdated, setProfileUpdated] = useState(false);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const { data, error } = await supabase
-          .from("profiles")
-          .select("full_name, email")
-          .eq("id", userId)
-          .single();
+  const fetchProfile = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("full_name, email")
+        .eq("id", userId)
+        .single();
 
-        if (error) throw error;
+      if (error) throw error;
 
-        if (data) {
-          const [fName, lName] = data.full_name.split(" ");
-          setFirstName(fName);
-          setLastName(lName);
-          setEmail(data.email);
+      if (data) {
+        const [fName, lName] = data.full_name.split(" ");
+        setFirstName(fName);
+        setLastName(lName);
+        setEmail(data.email);
 
-          const { data: imageData } = await supabase.storage
-            .from("avatar")
-            .getPublicUrl(`public/${userId}/avatar.png`);
+        const { data: imageData } = supabase.storage
+          .from("avatar")
+          .getPublicUrl(`public/${userId}/avatar.png`);
 
-          if (imageData.publicUrl) {
-            setProfilePicture(imageData.publicUrl);
-            setPreview(imageData.publicUrl);
-          }
-
-          setInitialProfile({
-            firstName: fName,
-            lastName: lName,
-            email: data.email,
-            profilePicture: imageData.publicUrl || null,
-          });
+        if (imageData.publicUrl) {
+          const imageUrl = `${imageData.publicUrl}?t=${Date.now()}`;
+          setProfilePicture(imageUrl);
+          setPreview(imageUrl);
         }
-      } catch (error) {
-        console.error("Error fetching profile:", error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
 
+        setInitialProfile({
+          firstName: fName,
+          lastName: lName,
+          email: data.email,
+          profilePicture: imageData.publicUrl ? `${imageData.publicUrl}?t=${Date.now()}` : null,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching profile:", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchProfile();
   }, [userId]);
 
@@ -156,11 +157,10 @@ const UserProfile = ({ userId, onProfileUpdate }) => {
 
         if (uploadError) throw uploadError;
 
-        const { data: imageData } = await supabase.storage
+        const { data: imageData } = supabase.storage
           .from("avatar")
           .getPublicUrl(`public/${userId}/avatar.png`);
 
-        // Append a timestamp to the image URL to prevent caching
         newProfilePicture = `${imageData.publicUrl}?t=${Date.now()}`;
         setProfilePicture(newProfilePicture);
         setPreview(newProfilePicture);
@@ -173,7 +173,10 @@ const UserProfile = ({ userId, onProfileUpdate }) => {
         profilePicture: newProfilePicture,
       });
       setProfileUpdated(false);
-      onProfileUpdate();
+      onProfileUpdate(newProfilePicture); // Pass the new profile picture URL to the parent component
+      
+      // Refetch the profile to ensure all data is up to date
+      await fetchProfile();
     } catch (error) {
       console.error("Error updating profile:", error.message);
       alert("There was an error updating your profile.");
@@ -182,10 +185,6 @@ const UserProfile = ({ userId, onProfileUpdate }) => {
     }
   };
 
-  if (loading) {
-    return <UserProfileSkeleton />;
-  }
-
   const ErrorMessage = ({ message }) => (
     <div className="flex items-center mt-1 text-error">
       <IoInformationCircle className="mr-1" />
@@ -193,9 +192,13 @@ const UserProfile = ({ userId, onProfileUpdate }) => {
     </div>
   );
 
+  if (loading) {
+    return <UserProfileSkeleton />;
+  }
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-primaryBg text-secondaryText">
-      <div className="md:p-8 p-5 bg-white shadow-lg rounded-lg w-full">
+    <div className="flex items-center justify-center bg-primaryBg text-secondaryText">
+      <div className="lg:p-8 p-5 bg-white shadow-lg rounded-lg w-full">
         <div className="pb-6">
           <h2 className="text-2xl font-bold mb-2">Profile Details</h2>
           <p className="text-xs mt-4 text-secondaryText leading-relaxed">
@@ -204,7 +207,9 @@ const UserProfile = ({ userId, onProfileUpdate }) => {
         </div>
         <form onSubmit={handleSubmit} className="space-y-6 w-full">
           <div className="flex flex-col md:flex-row md:items-center justify-evenly w-full bg-primaryBg rounded-xl md:rounded-2xl lg:rounded-3xl py-6 px-4 md:px-6 lg:px-8">
-            <div className="md:flex-1 w-full md:w-0 text-sm pb-4">Profile Picture</div>
+            <div className="md:flex-1 md:px-6 w-full md:w-0 text-sm pb-4">
+              Profile Picture
+            </div>
 
             <label
               htmlFor="uploadImage"
@@ -235,10 +240,10 @@ const UserProfile = ({ userId, onProfileUpdate }) => {
               className="hidden"
             />
 
-            <div className="md:flex-1 md:px-6  w-full md:w-0 text-sm pt-4">
-              <span className=" text-sm ">
+            <div className="md:flex-1 md:px-6 w-full md:w-0 text-sm pt-4">
+              <span className="text-sm">
                 Image must be below 1024×1024px.
-                <p className="text-sm ">Use PNG or JPG formats.</p>
+                <p className="text-sm">Use PNG or JPG formats.</p>
               </span>
             </div>
             {errors.profilePicture && (
@@ -266,18 +271,19 @@ const UserProfile = ({ userId, onProfileUpdate }) => {
                     }
                   }}
                   placeholder="e.g. John"
-                  className={`mt-1 w-full text-sm md:flex-grow-[2] bg-white md:w-0 rounded-md md:rounded-[8px]  border-gray-300 shadow-sm focus:ring-primaryPurple focus:border-primaryPurple py-5 ${
+                  className={`mt-1 w-full text-sm md:flex-grow-[2] bg-white md:w-0 rounded-md md:rounded-[8px] border-gray-300 shadow-sm focus:ring-primaryPurple focus:border-primaryPurple py-5 ${
                     errors.firstName ? "border-error" : ""
                   }`}
-                  required                />
+                  required
+                />
               </div>
               {errors.firstName && <ErrorMessage message={errors.firstName} />}
             </div>
 
             <div className="flex flex-col">
-            <div className="flex flex-col md:flex-row items-center">
+              <div className="flex flex-col md:flex-row items-center">
                 <label
-                  htmlFor="firstName"
+                  htmlFor="lastName"
                   className="md:flex-1 w-full md:w-0 text-sm font-medium"
                 >
                   Last name*
@@ -292,20 +298,21 @@ const UserProfile = ({ userId, onProfileUpdate }) => {
                       setErrors((prev) => ({ ...prev, lastName: "" }));
                     }
                   }}
-                placeholder="e.g. Doe"
-                 className={`mt-1 w-full text-sm md:flex-grow-[2] bg-white md:w-0 rounded-md md:rounded-[8px]  border-gray-300 shadow-sm focus:ring-primaryPurple focus:border-primaryPurple py-5 ${
-                  errors.lastName ? "border-error" : ""
-                }`}
-                required                />
+                  placeholder="e.g. Doe"
+                  className={`mt-1 w-full text-sm md:flex-grow-[2] bg-white md:w-0 rounded-md md:rounded-[8px] border-gray-300 shadow-sm focus:ring-primaryPurple focus:border-primaryPurple py-5 ${
+                    errors.lastName ? "border-error" : ""
+                  }`}
+                  required
+                />
               </div>
               {errors.lastName && <ErrorMessage message={errors.lastName} />}
             </div>
 
             <div className="flex flex-col">
-            <div className="flex flex-col md:flex-row items-center">
-            <label
+              <div className="flex flex-col md:flex-row items-center">
+                <label
                   htmlFor="email"
-                 className="md:flex-1 w-full md:w-0 text-sm font-medium"
+                  className="md:flex-1 w-full md:w-0 text-sm font-medium"
                 >
                   Email*
                 </label>
@@ -329,41 +336,40 @@ const UserProfile = ({ userId, onProfileUpdate }) => {
               {errors.email && <ErrorMessage message={errors.email} />}
             </div>
           </div>
-
-          
         </form>
-        <div className="flex w-full lg:justify-end mt-8">
-        <Button
-          onClick={handleSubmit}
-          type="submit"
-          className={`
-        py-2 px-6 
-        border border-transparent 
-        rounded-md 
-        shadow-sm 
-        w-full
-        text-white 
-        bg-primaryPurple 
-        transition-all 
-        duration-300 
-        ease-in-out
-        hover:bg-primaryPurple/90
-        hover:shadow-lg
-        focus:outline-none 
-        focus:ring-2 
-        focus:ring-offset-2 
-        focus:ring-primaryPurple
-        disabled:opacity-50
-        disabled:cursor-not-allowed
-        disabled:hover:scale-100
-        disabled:hover:bg-primaryPurple
-        disabled:hover:shadow-sm
-      `}
-          disabled={loading || !profileUpdated}
-        >
-          {loading ? "Saving..." : "Save"}
-        </Button>
-      </div>
+        <div className="flex w-full md:justify-end mt-8">
+          <Button
+            onClick={handleSubmit}
+            type="submit"
+            className={`
+              py-2 px-6 
+              border border-transparent 
+              rounded-md 
+              shadow-sm 
+              w-full
+              md:w-fit
+              text-white 
+              bg-primaryPurple 
+              transition-all 
+              duration-300 
+              ease-in-out
+              hover:bg-primaryPurple/90
+              hover:shadow-lg
+              focus:outline-none 
+              focus:ring-2 
+              focus:ring-offset-2 
+              focus:ring-primaryPurple
+              disabled:opacity-50
+              disabled:cursor-not-allowed
+              disabled:hover:scale-100
+              disabled:hover:bg-primaryPurple
+              disabled:hover:shadow-sm
+            `}
+            disabled={loading || !profileUpdated}
+          >
+            {loading ? "Saving..." : "Save"}
+          </Button>
+        </div>
       </div>
     </div>
   );

@@ -1,36 +1,36 @@
+// File: pages/profile-preview.js
 "use client";
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
 import Display from "../components/Display";
 import DisplayLinksComponent from "../components/DisplayLinkComponent";
+import { useRouter } from 'next/navigation';
 
-export default function ProfilPreview() {
+export default function ProfilePreview() {
   const [userId, setUserId] = useState(null);
   const [userLinks, setUserLinks] = useState([]);
   const [profileUpdated, setProfileUpdated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [shareableLink, setShareableLink] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     const getUserInfo = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         setUserId(user.id);
       }
     };
-
     getUserInfo();
   }, []);
+
   useEffect(() => {
     fetchUserLinks();
   }, [userId]);
 
   const fetchUserLinks = async () => {
     if (!userId) return;
-
     try {
       setLoading(true);
       const { data, error } = await supabase
@@ -38,42 +38,62 @@ export default function ProfilPreview() {
         .select("*")
         .eq("user_id", userId)
         .order("created_at", { ascending: true });
-
       if (error) {
-        console.error("Error line 27 add comp", error);
+        console.error("Error fetching links:", error);
       } else {
         setUserLinks(data);
       }
     } catch (error) {
-      console.error("Error line 32 add comp:", error);
+      console.error("Error fetching links:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <div className="relative min-h-screen bg-primaryBg">
-      <div className="h-[33vh] rounded-b-3xl p-4 bg-primaryPurple">
-        <nav className="flex justify-between bg-white content-center items-center w-full rounded-lg p-3 ">
-          <button className="flex space-x-8">
-            <Link
-              href="/"
-              className=" px-5 py-1 text-sm font-medium rounded-md text-primaryPurple border-2 border-primaryPurple hover:bg-secondaryBg hover:text-primaryPurple"
-            >
-              Back to Editor
-            </Link>
-          </button>
-          <div className=" px-5 py-1 text-sm font-medium rounded-md text-white bg-primaryPurple cursor-not-allowed">
-            Preview
-          </div>
-        </nav>
-      </div>
-      <div className=""></div>
+  const generateShareableLink = () => {
+    const link = `${window.location.origin}/profile/${userId}`;
+    setShareableLink(link);
+    return link;
+  };
 
-      <div className="absolute top-10 left-0 right-0 z-50 flex flex-col items-center mx-auto mt-20  bg-white shadow-lg py-6 rounded-lg w-[280px]">
-        <Display className="mx-auto" userId={userId} key={profileUpdated} />
-        <DisplayLinksComponent userLinks={userLinks} userId={userId} />
+  const copyLinkToClipboard = () => {
+    const link = generateShareableLink();
+    navigator.clipboard.writeText(link).then(() => {
+      alert("Link copied to clipboard!");
+    }).catch((err) => {
+      console.error('Failed to copy link: ', err);
+    });
+  };
+
+  return (
+    <div>
+      <div className="relative min-h-screen md:bg-primaryBg">
+        <div className="hidden md:block lg:h-[33vh] md:h-[22vh] rounded-b-3xl p-4 bg-primaryPurple">
+          <nav className="md:flex hidden justify-between bg-white content-center items-center w-full rounded-lg p-3 ">
+            <button className="flex space-x-8">
+              <Link href="/" className="px-5 py-1 text-sm font-medium rounded-md text-primaryPurple border-2 border-primaryPurple hover:bg-secondaryBg hover:text-primaryPurple">
+                Back to Editor
+              </Link>
+            </button>
+            <button onClick={copyLinkToClipboard} className="px-5 py-1 text-sm font-medium rounded-md text-white bg-primaryPurple">
+              Share Link
+            </button>
+          </nav>
+        </div>
+        <nav className="flex md:hidden justify-between bg-white content-center items-center w-full rounded-lg p-3">
+          <Link href="/" className="px-8 py-2 text-sm font-medium rounded-md text-primaryPurple border-2 border-primaryPurple hover:bg-secondaryBg hover:text-primaryPurple">
+            Back to Editor
+          </Link>
+          <button onClick={copyLinkToClipboard} className="px-8 py-2 text-sm font-medium rounded-md text-white bg-primaryPurple">
+            Share Link
+          </button>
+        </nav>
+        <div className="absolute top-10 left-0 right-0 z-50 flex flex-col items-center mx-auto mt-20 bg-white shadow-lg py-6 rounded-lg md:w-[280px] w-[80vw]">
+          <Display className="mx-auto" userId={userId} key={profileUpdated} />
+          <DisplayLinksComponent userLinks={userLinks} userId={userId} />
+        </div>
       </div>
     </div>
   );
 }
+

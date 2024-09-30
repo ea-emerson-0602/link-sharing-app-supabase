@@ -318,7 +318,7 @@ const AddLinkComponent = ({ userId, onLinkUpdate, setUserLinks }) => {
           </div>
         </form>
       )}
-      <div className="flex w-full lg:justify-end mt-8">
+      <div className="flex w-full  md:justify-end mt-8">
         <Button
           onClick={handleSubmit}
           type="submit"
@@ -327,7 +327,8 @@ const AddLinkComponent = ({ userId, onLinkUpdate, setUserLinks }) => {
         border border-transparent 
         rounded-md 
         shadow-sm 
-        w-full
+         w-full
+        md:w-fit
         text-white 
         bg-primaryPurple 
         transition-all 

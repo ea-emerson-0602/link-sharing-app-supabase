@@ -19,6 +19,7 @@ const HomePage = () => {
   const [profileUpdated, setProfileUpdated] = useState(false);
   const [linkUpdated, setLinkUpdated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [profilePicture, setProfilePicture] = useState(null);
 
   const router = useRouter();
 
@@ -70,7 +71,7 @@ const HomePage = () => {
 
   return (
     <div className="bg-primaryBg min-h-screen flex flex-col">
-      <div className="bg-primaryBg fixed top-0 left-0 right-0 z-50 p-4 mb-2">
+      <div className="bg-primaryBg fixed top-0 left-0 right-0 lg:z-50 p-4 mb-2">
         <nav className="flex justify-between bg-white content-center items-center rounded-md p-3">
           {/* Logo Section */}
           <div className="flex space-x-2 items-center">
@@ -106,14 +107,13 @@ const HomePage = () => {
             </button>
           </div>
 
-          {/* Preview Button */}
-          <button className="flex items-center space-x-2 px-4 py-1 text-sm font-medium rounded-md text-primaryPurple border-2 border-primaryPurple hover:bg-secondaryBg hover:text-primaryPurple">
+          <Link
+            href="/preview"
+            className="flex justify-center items-center space-x-2 px-4 py-1 text-sm font-medium rounded-md text-primaryPurple border-2 border-primaryPurple hover:bg-secondaryBg hover:text-primaryPurple"
+          >
             <FaEye />
-            <Link href="/preview" className="hidden md:inline">
-              Preview
-            </Link>{" "}
-            {/* Hide text on small screens */}
-          </button>
+            <span className="hidden md:inline">Preview</span>{" "}
+          </Link>
         </nav>
       </div>
       <div className="flex h-full mt-24 mx-4 lg:space-x-4">
@@ -123,12 +123,13 @@ const HomePage = () => {
             style={{ height: "500px", backgroundSize: "contain" }}
           >
             <div className="w-fit">
-              <Display userId={userId} key={profileUpdated} />
+              <Display
+                userId={userId}
+                key={profileUpdated}
+                profilePicture={profilePicture}
+              />
               <DisplayLinksComponent userLinks={userLinks} userId={userId} />
             </div>
-          </div>
-          <div className="flex justify-end mt-8">
-            {userId && <LogoutButton>Sign Out</LogoutButton>}
           </div>
         </div>
         <div className="flex-1 rounded-lg w-3/5 ">
@@ -136,6 +137,8 @@ const HomePage = () => {
             <EditProfile
               userId={userId}
               onProfileUpdate={handleProfileUpdate}
+              setProfilePicture={setProfilePicture}
+              profilePicture={profilePicture}
             />
           ) : (
             <AddLinkComponent
@@ -145,6 +148,9 @@ const HomePage = () => {
             />
           )}
         </div>
+      </div>
+      <div className="flex justify-end mt-8 mr-8">
+        {userId && <LogoutButton>Sign Out</LogoutButton>}
       </div>
     </div>
   );
