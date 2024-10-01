@@ -5,6 +5,7 @@ import { supabase } from "@/lib/client";
 import { FaEnvelope, FaEye, FaEyeSlash, FaLock } from "react-icons/fa";
 import logo from "../assets/logo.svg";
 import Image from "next/image";
+import { IoInformationCircleOutline } from "react-icons/io5";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -25,6 +26,8 @@ const Register = () => {
   // Regex Patterns
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+
+
 
   const handleRegister = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -118,14 +121,14 @@ const Register = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className={`block w-full pl-10 pr-3 py-2 text-xs border ${
-                  errors.email ? "border-error" : "border-gray-300"
+                  errors.email ? "border-error text-error" : "border-gray-300"
                 } rounded-lg shadow-sm focus:outline-none focus:ring-primaryPurple focus:border-primaryPurple sm:text-sm`}
                 placeholder="e.g. alex@email.com"
                 required
               />
             </div>
             {errors.email && (
-              <p className="text-error text-xs mt-1">{errors.email}</p>
+              <p className="text-error text-xs mt-1 flex items-center space-x-4"><IoInformationCircleOutline/>{errors.email}</p>
             )}
           </div>
 
@@ -159,7 +162,7 @@ const Register = () => {
               </div>
             </div>
             {errors.password && (
-              <p className="text-error text-xs mt-1">{errors.password}</p>
+              <p className="text-error flex items-center space-x-4 text-xs mt-1"><IoInformationCircleOutline/>{errors.password}</p>
             )}
           </div>
 
@@ -196,7 +199,7 @@ const Register = () => {
               </div>
             </div>
             {errors.confirmPassword && (
-              <p className="text-error text-xs mt-1">
+              <p className="text-error flex items-center space-x-4 text-xs mt-1"><IoInformationCircleOutline/>
                 {errors.confirmPassword}
               </p>
             )}

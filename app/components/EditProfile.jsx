@@ -260,6 +260,7 @@ const UserProfile = ({ userId, onProfileUpdate }) => {
                 >
                   First name*
                 </label>
+                <div className="flex flex-col w-full mt-1 text-sm md:flex-grow-[2] md:w-0">
                 <Input
                   type="text"
                   id="firstName"
@@ -271,13 +272,15 @@ const UserProfile = ({ userId, onProfileUpdate }) => {
                     }
                   }}
                   placeholder="e.g. John"
-                  className={`mt-1 w-full text-sm md:flex-grow-[2] bg-white md:w-0 rounded-md md:rounded-[8px] border-gray-300 shadow-sm focus:ring-primaryPurple focus:border-primaryPurple py-5 ${
-                    errors.firstName ? "border-error" : ""
+                  className={` bg-white  rounded-md md:rounded-[8px] border-gray-300 shadow-sm focus:ring-primaryPurple focus:border-primaryPurple py-5 ${
+                    errors.firstName ? "border-error text-error" : ""
                   }`}
                   required
                 />
+                 {errors.firstName && <ErrorMessage message={errors.firstName} />}
+                </div>
               </div>
-              {errors.firstName && <ErrorMessage message={errors.firstName} />}
+             
             </div>
 
             <div className="flex flex-col">
@@ -288,6 +291,7 @@ const UserProfile = ({ userId, onProfileUpdate }) => {
                 >
                   Last name*
                 </label>
+                <div className="flex flex-col w-full mt-1 text-sm md:flex-grow-[2] md:w-0">
                 <Input
                   type="text"
                   id="lastName"
@@ -299,13 +303,16 @@ const UserProfile = ({ userId, onProfileUpdate }) => {
                     }
                   }}
                   placeholder="e.g. Doe"
-                  className={`mt-1 w-full text-sm md:flex-grow-[2] bg-white md:w-0 rounded-md md:rounded-[8px] border-gray-300 shadow-sm focus:ring-primaryPurple focus:border-primaryPurple py-5 ${
-                    errors.lastName ? "border-error" : ""
+                  className={` bg-white rounded-md md:rounded-[8px] border-gray-300 shadow-sm focus:ring-primaryPurple focus:border-primaryPurple py-5 ${
+                    errors.lastName ? "border-error text-error" : ""
                   }`}
                   required
                 />
+                {errors.lastName && <ErrorMessage message={errors.lastName} />}
+                </div>
+
               </div>
-              {errors.lastName && <ErrorMessage message={errors.lastName} />}
+              
             </div>
 
             <div className="flex flex-col">
@@ -316,6 +323,7 @@ const UserProfile = ({ userId, onProfileUpdate }) => {
                 >
                   Email*
                 </label>
+                <div className="flex flex-col w-full mt-1 text-sm md:flex-grow-[2] md:w-0">
                 <Input
                   type="email"
                   id="email"
@@ -327,13 +335,15 @@ const UserProfile = ({ userId, onProfileUpdate }) => {
                     }
                   }}
                   placeholder="e.g. johndoe@example.com"
-                  className={`mt-1 w-full text-sm md:flex-grow-[2] bg-white md:w-0 rounded-md md:rounded-[8px] border-gray-300 shadow-sm focus:ring-primaryPurple focus:border-primaryPurple py-5 ${
+                  className={` bg-white rounded-md md:rounded-[8px] border-gray-300 shadow-sm focus:ring-primaryPurple focus:border-primaryPurple py-5 ${
                     errors.email ? "border-error" : ""
                   }`}
                   required
                 />
+                {errors.email && <ErrorMessage message={errors.email} />}
               </div>
-              {errors.email && <ErrorMessage message={errors.email} />}
+              </div>
+              
             </div>
           </div>
         </form>

@@ -5,6 +5,7 @@ import { signIn } from "@/utils/auth";
 import logo from "../assets/logo.svg";
 import Image from "next/image";
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
+import { IoInformationCircleOutline } from "react-icons/io5";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -94,7 +95,7 @@ const LoginPage = () => {
               />
             </div>
             {errors.email && (
-              <p className="text-error text-xs mt-1">{errors.email}</p>
+              <p className="text-error text-xs mt-1 flex items-center space-x-4"><IoInformationCircleOutline/>{errors.email}</p>
             )}
           </div>
 
@@ -124,7 +125,7 @@ const LoginPage = () => {
               </div>
             </div>
             {errors.password && (
-              <p className="text-error text-xs mt-1">{errors.password}</p>
+              <p className="text-error text-xs mt-1 flex items-center space-x-4"><IoInformationCircleOutline/>{errors.password}</p>
             )}
           </div>
 
