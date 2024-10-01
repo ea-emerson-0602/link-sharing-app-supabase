@@ -10,6 +10,8 @@ import LogoutButton from "./components/LogoutButton";
 import Link from "next/link";
 import logo from "./assets/logo.svg";
 import { FaLink, FaUser, FaEye } from "react-icons/fa";
+import ProtectedPage from "./pages/protected"
+import { useRouter } from "next/navigation"; 
 
 const HomePage = () => {
   const [userId, setUserId] = useState(null);
@@ -20,7 +22,7 @@ const HomePage = () => {
   const [, setLoading] = useState(true);
   const [profilePicture, setProfilePicture] = useState(null);
 
-
+  const router = useRouter();
   const handleProfileUpdate = () => {
     setProfileUpdated((prev) => !prev);
   };
@@ -35,6 +37,9 @@ const HomePage = () => {
       } = await supabase.auth.getUser();
       if (user) {
         setUserId(user.id);
+      }
+      else{
+        router.push("/login")
       }
     };
 
@@ -68,7 +73,9 @@ const HomePage = () => {
   };
 
   return (
-    <div className="bg-primaryBg min-h-screen flex flex-col">
+    <ProtectedPage>
+
+<div className="bg-primaryBg min-h-screen flex flex-col">
       <div className="bg-primaryBg fixed top-0 left-0 right-0 lg:z-50 p-4 mb-2">
         <nav className="flex justify-between bg-white content-center items-center rounded-md p-3">
           {/* Logo Section */}
@@ -151,6 +158,7 @@ const HomePage = () => {
         {userId && <LogoutButton>Sign Out</LogoutButton>}
       </div>
     </div>
+    </ProtectedPage>
   );
 };
 

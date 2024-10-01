@@ -1,16 +1,32 @@
-// pages/protected.js
-import { supabase } from '../lib/supabaseClient';
+"use client";
 
-export default function ProtectedPage() {
-  return <h1>This is a protected page!</h1>;
-}
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabaseClient";
 
-export async function getServerSideProps({ req }) {
-  const { user } = await supabase.auth.api.getUserByCookie(req);
+export default function ProtectedPage({ children }) {
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
-  if (!user) {
-    return { props: {}, redirect: { destination: '/login', permanent: false } };
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (!user) {
+        // Immediately redirect unauthenticated users without adding history
+        router.replace("/login");
+      } else {
+        setLoading(false);
+      }
+    };
+
+    // Check authentication right away
+    checkUser();
+  }, [router]);
+
+  if (loading) {
+    return null; // Render nothing until authentication check is complete
   }
 
-  return { props: { user } };
+  return <>{children}</>;
 }

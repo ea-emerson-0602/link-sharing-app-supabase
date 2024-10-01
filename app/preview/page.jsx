@@ -12,10 +12,13 @@ export default function ProfilePreview() {
   const [profileUpdated] = useState(false);
   const [, setLoading] = useState(true);
   const [, setShareableLink] = useState("");
+  const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
     const getUserInfo = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (user) {
         setUserId(user.id);
       }
@@ -56,11 +59,15 @@ export default function ProfilePreview() {
 
   const copyLinkToClipboard = () => {
     const link = generateShareableLink();
-    navigator.clipboard.writeText(link).then(() => {
-      alert("Link copied to clipboard!");
-    }).catch((err) => {
-      console.error('Failed to copy link: ', err);
-    });
+    navigator.clipboard
+      .writeText(link)
+      .then(() => {
+        setShowToast(true); // Show toast
+        setTimeout(() => setShowToast(false), 3000); // Hide after 3 seconds
+      })
+      .catch((err) => {
+        console.error("Failed to copy link:", err);
+      });
   };
 
   return (
@@ -69,20 +76,32 @@ export default function ProfilePreview() {
         <div className="hidden md:block lg:h-[33vh] md:h-[22vh] rounded-b-3xl p-4 bg-primaryPurple">
           <nav className="md:flex hidden justify-between bg-white content-center items-center w-full rounded-lg p-3 ">
             <button className="flex space-x-8">
-              <Link href="/" className="px-5 py-1 text-sm font-medium rounded-md text-primaryPurple border-2 border-primaryPurple hover:bg-secondaryBg hover:text-primaryPurple">
+              <Link
+                href="/"
+                className="px-5 py-1 text-sm font-medium rounded-md text-primaryPurple border-2 border-primaryPurple hover:bg-secondaryBg hover:text-primaryPurple"
+              >
                 Back to Editor
               </Link>
             </button>
-            <button onClick={copyLinkToClipboard} className="px-5 py-1 text-sm font-medium rounded-md text-white bg-primaryPurple">
+            <button
+              onClick={copyLinkToClipboard}
+              className="px-5 py-1 text-sm font-medium rounded-md text-white bg-primaryPurple"
+            >
               Share Link
             </button>
           </nav>
         </div>
         <nav className="flex md:hidden justify-between bg-white content-center items-center w-full rounded-lg p-3">
-          <Link href="/" className="px-8 py-2 text-sm font-medium rounded-md text-primaryPurple border-2 border-primaryPurple hover:bg-secondaryBg hover:text-primaryPurple">
+          <Link
+            href="/"
+            className="px-8 py-2 text-sm font-medium rounded-md text-primaryPurple border-2 border-primaryPurple hover:bg-secondaryBg hover:text-primaryPurple"
+          >
             Back to Editor
           </Link>
-          <button onClick={copyLinkToClipboard} className="px-8 py-2 text-sm font-medium rounded-md text-white bg-primaryPurple">
+          <button
+            onClick={copyLinkToClipboard}
+            className="px-8 py-2 text-sm font-medium rounded-md text-white bg-primaryPurple"
+          >
             Share Link
           </button>
         </nav>
@@ -91,7 +110,13 @@ export default function ProfilePreview() {
           <DisplayLinksComponent userLinks={userLinks} userId={userId} />
         </div>
       </div>
+
+      {/* Toast Notification */}
+      {showToast && (
+        <div className="fixed bottom-5 z-50 left-1/2 transform -translate-x-1/2 py-2 px-4 bg-primaryText text-white rounded-md shadow-lg">
+          Link copied to clipboard!
+        </div>
+      )}
     </div>
   );
 }
-
