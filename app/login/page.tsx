@@ -21,7 +21,7 @@ const LoginPage = () => {
     setErrors({ email: "", password: "" });
     setError(null);
 
-    let validationErrors = {
+    const validationErrors = {
       email: "",
       password: "",
     };

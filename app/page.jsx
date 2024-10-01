@@ -9,7 +9,6 @@ import DisplayLinksComponent from "./components/DisplayLinkComponent";
 import LogoutButton from "./components/LogoutButton";
 import Link from "next/link";
 import logo from "./assets/logo.svg";
-import { useRouter } from "next/navigation";
 import { FaLink, FaUser, FaEye } from "react-icons/fa";
 
 const HomePage = () => {
@@ -17,11 +16,10 @@ const HomePage = () => {
   const [userLinks, setUserLinks] = useState([]);
   const [activePage, setActivePage] = useState("profile");
   const [profileUpdated, setProfileUpdated] = useState(false);
-  const [linkUpdated, setLinkUpdated] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [, setLinkUpdated] = useState(false);
+  const [, setLoading] = useState(true);
   const [profilePicture, setProfilePicture] = useState(null);
 
-  const router = useRouter();
 
   const handleProfileUpdate = () => {
     setProfileUpdated((prev) => !prev);

@@ -141,7 +141,7 @@ const UserProfile = ({ userId, onProfileUpdate }) => {
     }
 
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("profiles")
         .upsert({ id: userId, full_name: `${firstName} ${lastName}`, email });
 

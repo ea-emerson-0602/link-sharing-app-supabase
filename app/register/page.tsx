@@ -31,7 +31,7 @@ const Register = () => {
     setErrors({ email: "", password: "", confirmPassword: "" }); // Reset errors
     setMessage(null); // Reset message
 
-    let validationErrors = {
+    const validationErrors = {
       email: "",
       password: "",
       confirmPassword: "",
@@ -99,7 +99,7 @@ const Register = () => {
         {/* Title */}
         <h2 className="text-2xl lg:text-3xl font-bold mb-3">Create account</h2>
         <p className="mb-4 sm:mb-6 text-secondaryText text-sm">
-          Let's get you started sharing your links!
+          Let&apos;s get you started sharing your links!
         </p>
         {message && (
           <p className="text-green-500 text-center mt-4">{message}</p>

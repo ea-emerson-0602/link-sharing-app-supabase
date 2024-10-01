@@ -5,15 +5,13 @@ import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
 import Display from "../components/Display";
 import DisplayLinksComponent from "../components/DisplayLinkComponent";
-import { useRouter } from 'next/navigation';
 
 export default function ProfilePreview() {
   const [userId, setUserId] = useState(null);
   const [userLinks, setUserLinks] = useState([]);
-  const [profileUpdated, setProfileUpdated] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [shareableLink, setShareableLink] = useState("");
-  const router = useRouter();
+  const [profileUpdated] = useState(false);
+  const [, setLoading] = useState(true);
+  const [, setShareableLink] = useState("");
 
   useEffect(() => {
     const getUserInfo = async () => {

@@ -32,7 +32,7 @@ const AddLinkComponent = ({ userId, onLinkUpdate, setUserLinks }) => {
   const [loading, setLoading] = useState(true);
   const [hasChanges, setHasChanges] = useState(false);
   const [initialLinks, setInitialLinks] = useState([]);
-  const [isDropdownOpen, setIsDropdownOpen] = useState({});
+  // const [isDropdownOpen, setIsDropdownOpen] = useState({});
   const [isOpen, setIsOpen] = useState(false);
 
   const fetchUserLinks = async () => {
@@ -128,7 +128,7 @@ const AddLinkComponent = ({ userId, onLinkUpdate, setUserLinks }) => {
       console.log("User ID:", userId);
       try {
         // Fetch existing links
-        const { data: existingLinks, error: fetchError } = await supabase
+        const { error: fetchError } = await supabase
           .from("links")
           .select("*")
           .eq("user_id", userId);
@@ -191,12 +191,12 @@ const AddLinkComponent = ({ userId, onLinkUpdate, setUserLinks }) => {
     }
   };
 
-  const toggleDropdown = (index) => {
-    setIsDropdownOpen((prevState) => ({
-      ...prevState,
-      [index]: !prevState[index],
-    }));
-  };
+  // const toggleDropdown = (index) => {
+  //   setIsDropdownOpen((prevState) => ({
+  //     ...prevState,
+  //     [index]: !prevState[index],
+  //   }));
+  // };
 
   return (
     <div className="mx-auto p-5 md:p-8 bg-white rounded-lg">
@@ -227,10 +227,10 @@ const AddLinkComponent = ({ userId, onLinkUpdate, setUserLinks }) => {
             height="auto"
             className="mx-auto"
           />
-          <h2 className="text-2xl font-bold mb-2">Let's get you started</h2>
+          <h2 className="text-2xl font-bold mb-2">Let&apos;s get you started</h2>
           <p className="text-xs mt-4 text-secondaryText leading-relaxed">
-            Use the "Add Link" button to get started. Once you have more than
-            one link, you can reorder and edit them. We're here to help you
+            Use the &quot;Add Link&quot; button to get started. Once you have more than
+            one link, you can reorder and edit them. We&apos;re here to help you
             share your profile with everyone!
           </p>
         </div>
