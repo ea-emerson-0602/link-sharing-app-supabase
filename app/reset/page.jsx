@@ -18,7 +18,7 @@ const PasswordReset = () => {
   });
   const [message, setMessage] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
-
+  const { token } = router.query;
   // Regex for a valid password (minimum 8 characters, at least one letter and one number)
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
@@ -33,6 +33,7 @@ const PasswordReset = () => {
       setMessage("Invalid or missing reset token.");
     }
   }, []);
+ 
 
   const handlePasswordReset = async (e) => {
     e.preventDefault();
@@ -57,27 +58,29 @@ const PasswordReset = () => {
       return;
     }
 
-    if (!accessToken) {
-      setMessage(
-        "Error: Missing access token. Please use the link provided in the reset email."
-      );
-      return;
-    }
+    if (!token) {
+        setErrors('Missing or invalid reset token.');
+        return;
+      }
+    
+      const { error } = await supabase.auth.updateUser(token, {
+        password
+      });
+    
+      if (error) {
+        setMessage(error.message);
+      } else {
+        alert('Password updated successfully');
+        router.push('/login');  // Redirect to login after success
+      }
+    
 
-    // Attempt to reset password with the access token
-    const { error } = await supabase.auth.updateUser(
-      {
-        password: newPassword,
-      },
-      { access_token: accessToken }
-    );
-
-    if (error) {
-      setMessage("Error resetting password. Please try again.");
-    } else {
-      setMessage("Password has been successfully reset. You can now log in.");
-      router.push("/login");
-    }
+    // if (error) {
+    //   setMessage("Error resetting password. Please try again.");
+    // } else {
+    //   setMessage("Password has been successfully reset. You can now log in.");
+    //   router.push("/login");
+    // }
   };
 
   return (
