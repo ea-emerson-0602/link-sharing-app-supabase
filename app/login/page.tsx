@@ -139,7 +139,7 @@ const LoginPage = () => {
         </form>
 
         {/* Create Account Link */}
-        <div className="mt-6 text-center">
+        <div className="mt-6 text-center text-secondaryText">
           <p className="text-sm">
             Don’t have an account?{" "}
             <Link
@@ -147,6 +147,15 @@ const LoginPage = () => {
               className="font-medium text-primaryPurple hover:underline"
             >
               Create account
+            </Link>
+          </p>
+          <p className="text-sm">
+            Forgotten your password?{" "}
+            <Link
+              href="/recovery"
+              className="font-medium text-primaryPurple hover:underline"
+            >
+              Click Here
             </Link>
           </p>
         </div>

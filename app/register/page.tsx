@@ -27,8 +27,6 @@ const Register = () => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
-
-
   const handleRegister = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     setErrors({ email: "", password: "", confirmPassword: "" }); // Reset errors
@@ -70,7 +68,9 @@ const Register = () => {
       if (error) {
         setErrors((prev) => ({ ...prev, email: error.message }));
       } else {
-        setMessage("Check your email for confirmation.");
+        setMessage(
+          "Check your email for confirmation. Note that there might be a slight delay of up to 10 minutes."
+        );
         // Clear the input fields after successful registration
         setEmail("");
         setPassword("");
@@ -105,12 +105,18 @@ const Register = () => {
           Let&apos;s get you started sharing your links!
         </p>
         {message && (
-          <p className="text-green-500 text-center mt-4">{message}</p>
+          <div className="mt-4 flex text-sm items-center text-green-500">
+            <IoInformationCircleOutline className="mr-2" />
+            <p>{message}</p>
+          </div>
         )}
-       <form onSubmit={handleRegister} className="space-y-5 sm:space-y-8">
+        <form onSubmit={handleRegister} className="space-y-5 sm:space-y-8">
           {/* Email Input */}
           <div className="relative">
-            <label htmlFor="email" className="block font-medium text-xs text-primaryText">
+            <label
+              htmlFor="email"
+              className="block font-medium text-xs text-primaryText"
+            >
               Email address
             </label>
             <div className="relative mt-1 flex items-center">
@@ -128,7 +134,10 @@ const Register = () => {
               />
             </div>
             {errors.email && (
-              <p className="text-error text-xs mt-1 flex items-center space-x-4"><IoInformationCircleOutline/>{errors.email}</p>
+              <p className="text-error text-xs mt-1 flex items-center space-x-4">
+                <IoInformationCircleOutline />
+                {errors.email}
+              </p>
             )}
           </div>
 
@@ -162,7 +171,10 @@ const Register = () => {
               </div>
             </div>
             {errors.password && (
-              <p className="text-error flex items-center space-x-4 text-xs mt-1"><IoInformationCircleOutline/>{errors.password}</p>
+              <p className="text-error flex items-center space-x-4 text-xs mt-1">
+                <IoInformationCircleOutline />
+                {errors.password}
+              </p>
             )}
           </div>
 
@@ -199,7 +211,8 @@ const Register = () => {
               </div>
             </div>
             {errors.confirmPassword && (
-              <p className="text-error flex items-center space-x-4 text-xs mt-1"><IoInformationCircleOutline/>
+              <p className="text-error flex items-center space-x-4 text-xs mt-1">
+                <IoInformationCircleOutline />
                 {errors.confirmPassword}
               </p>
             )}
