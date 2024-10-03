@@ -29,7 +29,9 @@ const PasswordRecovery = () => {
     }
 
     // Attempt to send password recovery email
-    const { error } = await supabase.auth.resetPasswordForEmail(email);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: 'https://devlinks-supabase.vercel.app/reset'
+      });
     const errors = await supabase.auth.resetPasswordForEmail(email);
     console.log(errors);
     
