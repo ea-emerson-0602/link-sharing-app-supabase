@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation"; // Correct useRouter import
+import { useSearchParams, useRouter } from "next/navigation"; // Correct useRouter import
 import Link from "next/link"; // Correct Link import
 import { supabase } from "@/lib/client";
 import { FaLock } from "react-icons/fa";
@@ -9,6 +9,8 @@ import Image from "next/image";
 import { IoInformationCircleOutline } from "react-icons/io5";
 
 const PasswordReset = () => {
+    
+  const searchParams = useSearchParams();
   const router = useRouter();
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -17,8 +19,8 @@ const PasswordReset = () => {
     confirmPassword: "",
   });
   const [message, setMessage] = useState(null);
-  const [accessToken, setAccessToken] = useState(null);
-  const { token } = router.query;
+  const [, setAccessToken] = useState(null);
+ const token = searchParams.get('token'); 
   // Regex for a valid password (minimum 8 characters, at least one letter and one number)
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
