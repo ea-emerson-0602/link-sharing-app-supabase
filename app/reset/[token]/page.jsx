@@ -19,7 +19,7 @@ const ResetPage = () => {
     confirmPassword: "",
   });
   const [message, setMessage] = useState(null);
-  const router = useRouter();
+  const router = useRo9uter();
   const { token } = router.query; // Extract token from query parameters
 
   // Ensure token is available before continuing
