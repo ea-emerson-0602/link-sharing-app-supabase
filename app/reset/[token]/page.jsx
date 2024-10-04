@@ -3,31 +3,32 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/client";
 import Link from "next/link";
 import { FaLock } from "react-icons/fa";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import logo from "../../assets/logo.svg"
 // import logo from "../assets/logo.svg";
 import Image from "next/image";
 import { IoInformationCircleOutline } from "react-icons/io5";
 
+import { useParams } from "next/navigation";
+
 
 const ResetPage = () => {
-  const router = useRouter();
+  // const router = useRouter();
   const [newPassword, setNewPassword] = useState("");
+  const params = useParams();
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({
     newPassword: "",
     confirmPassword: "",
   });
   const [message, setMessage] = useState(null);
-  const [token, setToken] = useState(null);// Extract token from query parameters
-
+const [token, setToken] = useState(null)
   useEffect(() => {
-    if (router.isReady) {
-      // Ensure router is ready before accessing query
-      setToken(router.query.token);
+    const token = params.token; // Destructure 'userid' from useParams
+    if (token) {
+      setToken(token);
     }
-  }, [router.isReady, router.query.token]);
-
+  }, [params]);
 
   // Ensure token is available before continuing
   useEffect(() => {
