@@ -5,7 +5,7 @@ import Link from "next/link";
 import { FaLock } from "react-icons/fa";
 
 import logo from "../assets/logo.svg"
-import useRouter from "next/navigation"
+import {useRouter} from "next/router"
 import Image from "next/image";
 import { IoInformationCircleOutline } from "react-icons/io5";
 
