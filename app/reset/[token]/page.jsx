@@ -12,7 +12,7 @@ const ResetPage = () => {
     newPassword: "",
     confirmPassword: "",
   });
-  const [message, setMessage] = useState<string | null>(null);
+  const [message, setMessage] = useState(null);
   const router = useRouter();
   const { token } = router.query; // Extract token from query parameters
 
@@ -61,16 +61,29 @@ const ResetPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Reset your password
-          </h2>
+<div className="flex flex-col space-y-10 items-center justify-center min-h-screen px-8 bg-white md:bg-primaryBg">
+      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
+        <div className="flex w-full items-center md:justify-center space-x-2 mb-6 sm:mb-8">
+          <Image
+            src={logo}
+            alt="logo"
+            width={36}
+            height={36}
+            className="sm:w-10 sm:h-10"
+          />
+          <span className="font-bold md:text-center text-3xl">devlinks</span>
         </div>
-        <form onSubmit={handlePasswordReset}>
-          <div className="rounded-md shadow-sm space-y-4">
-            {/* New Password Input */}
+        {message && (
+          <div className="mt-4 flex text-sm items-center text-green-500">
+            <IoInformationCircleOutline className="mr-2" />
+            <p>{message}</p>
+          </div>
+        )}
+
+        <h2 className="text-2xl lg:text-3xl font-bold mb-3">Reset Password</h2>
+
+        <form className="mt-6" onSubmit={handlePasswordReset}>
+          <div className="flex flex-col space-y-4">
             <div>
               <label
                 htmlFor="newPassword"
@@ -98,7 +111,6 @@ const ResetPage = () => {
               )}
             </div>
 
-            {/* Confirm Password Input */}
             <div>
               <label
                 htmlFor="confirmPassword"
@@ -126,7 +138,6 @@ const ResetPage = () => {
               )}
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primaryPurple hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primaryPurple"
@@ -137,12 +148,16 @@ const ResetPage = () => {
         </form>
 
         <div className="mt-6 text-center">
-          <Link href="/login" className="text-sm text-primaryPurple hover:underline">
+          <Link
+            href="/login"
+            className="text-sm text-primaryPurple hover:underline"
+          >
             Back to Login
           </Link>
         </div>
       </div>
     </div>
+
   );
 };
 
