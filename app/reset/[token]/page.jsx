@@ -19,7 +19,15 @@ const ResetPage = () => {
     confirmPassword: "",
   });
   const [message, setMessage] = useState(null);
-  const  {token}  = router.query; // Extract token from query parameters
+  const [token, setToken] = useState(null);// Extract token from query parameters
+
+  useEffect(() => {
+    if (router.isReady) {
+      // Ensure router is ready before accessing query
+      setToken(router.query.token);
+    }
+  }, [router.isReady, router.query.token]);
+
 
   // Ensure token is available before continuing
   useEffect(() => {
