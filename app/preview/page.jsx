@@ -1,6 +1,6 @@
 // File: pages/profile-preview.js
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState}from "react";
 import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
 import Display from "../components/Display";
