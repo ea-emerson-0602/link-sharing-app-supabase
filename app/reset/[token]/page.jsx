@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router"; // Import useRouter to extract query parameters
 import { supabase } from "@/lib/client";
 import Link from "next/link";
 import { FaLock } from "react-icons/fa";
