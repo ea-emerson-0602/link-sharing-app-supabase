@@ -45,7 +45,7 @@ const PasswordRecovery = () => {
 
     // Attempt to send password recovery email
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      confirmationURL: `https://devlinks-supabase.vercel.app/reset/${token}`,
+      ConfirmationURL: `https://devlinks-supabase.vercel.app/reset/${token}`,
     });
     const errors = await supabase.auth.resetPasswordForEmail(email);
     console.log(errors);
