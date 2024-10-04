@@ -20,7 +20,7 @@ const ResetPage = () => {
   });
   const [message, setMessage] = useState(null);
 
-  const token = router.query; // Extract token from query parameters
+  const {token} = router.query; // Extract token from query parameters
 
   // Ensure token is available before continuing
   useEffect(() => {
