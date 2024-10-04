@@ -9,33 +9,33 @@ import logo from "../../assets/logo.svg"
 import Image from "next/image";
 import { IoInformationCircleOutline } from "react-icons/io5";
 
-import { useParams } from "next/navigation";
+// import { useParams } from "next/navigation";
 
 
 const ResetPage = () => {
   // const router = useRouter();
   const [newPassword, setNewPassword] = useState("");
-  const params = useParams();
+  // const params = useParams();
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({
     newPassword: "",
     confirmPassword: "",
   });
   const [message, setMessage] = useState(null);
-const [token, setToken] = useState(null)
-  useEffect(() => {
-    const token = params.token; // Destructure 'userid' from useParams
-    if (token) {
-      setToken(token);
-    }
-  }, [params]);
+// const [token, setToken] = useState(null)
+//   useEffect(() => {
+//     const token = params.token; // Destructure 'userid' from useParams
+//     if (token) {
+//       setToken(token);
+//     }
+//   }, [params]);
 
-  // Ensure token is available before continuing
-  useEffect(() => {
-    if (!token) {
-      setMessage("Missing or invalid token");
-    }
-  }, [token]);
+//   // Ensure token is available before continuing
+//   useEffect(() => {
+//     if (!token) {
+//       setMessage("Missing or invalid token");
+//     }
+//   }, [token]);
 
   const handlePasswordReset = async (e) => {
     e.preventDefault();
@@ -53,10 +53,10 @@ const [token, setToken] = useState(null)
 
     try {
       // Ensure token is present before attempting to reset
-      if (!token) {
-        setMessage("Missing or invalid token");
-        return;
-      }
+      // if (!token) {
+      //   setMessage("Missing or invalid token");
+      //   return;
+      // }
 
       // Call Supabase API to reset password using the token
       const { error } = await supabase.auth.updateUser({
