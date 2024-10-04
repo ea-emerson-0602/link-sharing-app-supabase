@@ -11,6 +11,7 @@ import { IoInformationCircleOutline } from "react-icons/io5";
 
 
 const ResetPage = () => {
+  const router = useRouter();
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({
@@ -18,7 +19,7 @@ const ResetPage = () => {
     confirmPassword: "",
   });
   const [message, setMessage] = useState(null);
-  const router = useRouter();
+
   const { token } = router.query; // Extract token from query parameters
 
   // Ensure token is available before continuing
