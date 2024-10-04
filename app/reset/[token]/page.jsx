@@ -5,6 +5,12 @@ import { supabase } from "@/lib/client";
 import Link from "next/link";
 import { FaLock } from "react-icons/fa";
 
+import logo from "../../assets/logo.svg"
+// import logo from "../assets/logo.svg";
+import Image from "next/image";
+import { IoInformationCircleOutline } from "react-icons/io5";
+
+
 const ResetPage = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
