@@ -22,20 +22,6 @@ const ResetPage = () => {
     confirmPassword: "",
   });
   const [message, setMessage] = useState(null);
-// const [token, setToken] = useState(null)
-//   useEffect(() => {
-//     const token = params.token; // Destructure 'userid' from useParams
-//     if (token) {
-//       setToken(token);
-//     }
-//   }, [params]);
-
-//   // Ensure token is available before continuing
-//   useEffect(() => {
-//     if (!token) {
-//       setMessage("Missing or invalid token");
-//     }
-//   }, [token]);
 
   const handlePasswordReset = async (e) => {
     e.preventDefault();
@@ -60,7 +46,7 @@ const ResetPage = () => {
 
       // Call Supabase API to reset password using the token
       const { error } = await supabase.auth.updateUser({
-        access_token: token,// Pass the token to Supabase
+        // access_token: token,// Pass the token to Supabase
         password: newPassword,
       });
 
@@ -71,6 +57,7 @@ const ResetPage = () => {
       }
     } catch (err) {
       setMessage("Something went wrong. Please try again.");
+      console.log(err)
     }
   };
 
