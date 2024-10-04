@@ -1,16 +1,31 @@
 "use client";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/client";
 import { FaEnvelope } from "react-icons/fa";
 import logo from "../assets/logo.svg";
 import Image from "next/image";
 import { IoInformationCircleOutline } from "react-icons/io5";
+import { useSearchParams, useRouter } from "next/navigation";
 
+const RecoverPage = () => {
+  return (
+    <div>
+      <h1>Reset Password Page</h1>
+      <Suspense fallback={<p>Loading...</p>}>
+        <PasswordRecovery />
+      </Suspense>
+    </div>
+  );
+};
 const PasswordRecovery = () => {
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState({ email: "" });
   const [message, setMessage] = useState(null);
+  const searchParams = useSearchParams();
+
+  const router = useRouter();
+  const token = searchParams.entries("token");
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -30,12 +45,10 @@ const PasswordRecovery = () => {
 
     // Attempt to send password recovery email
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: 'https://devlinks-supabase.vercel.app/reset'
-      });
+      redirectTo: `https://devlinks-supabase.vercel.app/reset/${token}`,
+    });
     const errors = await supabase.auth.resetPasswordForEmail(email);
     console.log(errors);
-    
-    
 
     if (error) {
       setMessage("Error sending password reset email. Please try again.");
