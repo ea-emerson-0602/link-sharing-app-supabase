@@ -6,7 +6,7 @@ import { FaEnvelope } from "react-icons/fa";
 import logo from "../assets/logo.svg";
 import Image from "next/image";
 import { IoInformationCircleOutline } from "react-icons/io5";
-import { useSearchParams} from "next/navigation";
+// import { useSearchParams} from "next/navigation";
 
 const RecoverPage = () => {
   return (
@@ -22,10 +22,10 @@ const PasswordRecovery = () => {
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState({ email: "" });
   const [message, setMessage] = useState(null);
-  const searchParams = useSearchParams();
+//   const searchParams = useSearchParams();
 
 //   const router = useRouter();
-  const token = searchParams.entries("token");
+//   const token = searchParams.entries("token");
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -45,7 +45,7 @@ const PasswordRecovery = () => {
 
     // Attempt to send password recovery email
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      confirmationURL: `https://devlinks-supabase.vercel.app/reset/${token}`,
+      redirectTo: `https://devlinks-supabase.vercel.app/reset/`,
     });
     const errors = await supabase.auth.resetPasswordForEmail(email);
     console.log(errors);
