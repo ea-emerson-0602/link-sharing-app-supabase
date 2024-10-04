@@ -5,7 +5,8 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/client";
 import { FaLock } from "react-icons/fa";
-import logo from "../assets/logo.svg";
+import logo from "../../assets/logo.svg"
+// import logo from "../assets/logo.svg";
 import Image from "next/image";
 import { IoInformationCircleOutline } from "react-icons/io5";
 
