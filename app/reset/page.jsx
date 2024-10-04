@@ -32,7 +32,7 @@ const PasswordReset = () => {
     confirmPassword: "",
   });
   const [message, setMessage] = useState(null);
-  const [accessToken, setAccessToken] = useState(null);
+  const [, setAccessToken] = useState(null);
   const token = searchParams.get("token");
 
   // Regex for a valid password (minimum 8 characters, at least one letter and one number)
