@@ -1,15 +1,28 @@
 "use client";
-import { useState, useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation"; // Correct useRouter import
-import Link from "next/link"; // Correct Link import
+
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import { supabase } from "@/lib/client";
 import { FaLock } from "react-icons/fa";
 import logo from "../assets/logo.svg";
 import Image from "next/image";
 import { IoInformationCircleOutline } from "react-icons/io5";
 
+// Main ResetPage component with Suspense boundary
+const ResetPage = () => {
+  return (
+    <div>
+      <h1>Reset Password Page</h1>
+      <Suspense fallback={<p>Loading...</p>}>
+        <PasswordReset />
+      </Suspense>
+    </div>
+  );
+};
+
+// PasswordReset component containing the password reset logic
 const PasswordReset = () => {
-    
   const searchParams = useSearchParams();
   const router = useRouter();
   const [newPassword, setNewPassword] = useState("");
@@ -19,23 +32,19 @@ const PasswordReset = () => {
     confirmPassword: "",
   });
   const [message, setMessage] = useState(null);
-  const [, setAccessToken] = useState(null);
- const token = searchParams.get('token'); 
+  const [accessToken, setAccessToken] = useState(null);
+  const token = searchParams.get("token");
+
   // Regex for a valid password (minimum 8 characters, at least one letter and one number)
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
   useEffect(() => {
-    // Extract the token from the URL query parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get("access_token");
-
     if (token) {
       setAccessToken(token);
     } else {
       setMessage("Invalid or missing reset token.");
     }
-  }, []);
- 
+  }, [token]);
 
   const handlePasswordReset = async (e) => {
     e.preventDefault();
@@ -61,28 +70,20 @@ const PasswordReset = () => {
     }
 
     if (!token) {
-        setErrors('Missing or invalid reset token.');
-        return;
-      }
-    
-      const { error } = await supabase.auth.updateUser(token, {
-        password
-      });
-    
-      if (error) {
-        setMessage(error.message);
-      } else {
-        alert('Password updated successfully');
-        router.push('/login');  // Redirect to login after success
-      }
-    
+      setMessage("Missing or invalid reset token.");
+      return;
+    }
 
-    // if (error) {
-    //   setMessage("Error resetting password. Please try again.");
-    // } else {
-    //   setMessage("Password has been successfully reset. You can now log in.");
-    //   router.push("/login");
-    // }
+    const { error } = await supabase.auth.updateUser(token, {
+      password: newPassword,
+    });
+
+    if (error) {
+      setMessage(error.message);
+    } else {
+      alert("Password updated successfully");
+      router.push("/login");
+    }
   };
 
   return (
@@ -185,4 +186,4 @@ const PasswordReset = () => {
   );
 };
 
-export default PasswordReset;
+export default ResetPage;
