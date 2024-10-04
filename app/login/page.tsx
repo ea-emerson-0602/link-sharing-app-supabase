@@ -16,6 +16,10 @@ const LoginPage = () => {
     password: "",
   });
   const [error, setError] = useState<string | null>(null);
+  
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -27,11 +31,11 @@ const LoginPage = () => {
       password: "",
     };
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (emailRegex.test(email)) {
       validationErrors.email = "Invalid email format.";
     }
 
-    if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
+    if (passwordRegex.test(password)) {
       validationErrors.password =
         "Password must contain at least 8 characters, including letters and numbers.";
     }

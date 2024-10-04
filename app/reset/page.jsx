@@ -2,33 +2,39 @@
 import { useState} from "react";
 import { supabase } from "@/lib/client";
 import Link from "next/link";
-import { FaLock } from "react-icons/fa";
-// import { useRouter } from "next/navigation";
+import { FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import logo from "../assets/logo.svg"
-// import logo from "../assets/logo.svg";
 import Image from "next/image";
 import { IoInformationCircleOutline } from "react-icons/io5";
 
-// import { useParams } from "next/navigation";
-
 
 const ResetPage = () => {
-  // const router = useRouter();
   const [newPassword, setNewPassword] = useState("");
-  // const params = useParams();
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({
     newPassword: "",
     confirmPassword: "",
   });
   const [message, setMessage] = useState(null);
+  
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
   const handlePasswordReset = async (e) => {
     e.preventDefault();
     setErrors({ newPassword: "", confirmPassword: "" });
     setMessage(null);
 
-    // Validation logic
+    if (!passwordRegex.test(newPassword)) {
+      validationErrors.newPassword =
+        "Password must contain at least 8 characters, including letters and numbers.";
+    }
+    const validationErrors = {
+      newPassword: "",
+      
+      confirmPassword: "",
+    };
     if (newPassword !== confirmPassword) {
       setErrors((prev) => ({
         ...prev,
@@ -38,15 +44,7 @@ const ResetPage = () => {
     }
 
     try {
-      // Ensure token is present before attempting to reset
-      // if (!token) {
-      //   setMessage("Missing or invalid token");
-      //   return;
-      // }
-
-      // Call Supabase API to reset password using the token
       const { error } = await supabase.auth.updateUser({
-        // access_token: token,// Pass the token to Supabase
         password: newPassword,
       });
 
@@ -57,7 +55,6 @@ const ResetPage = () => {
       }
     } catch (err) {
       setMessage("Something went wrong. Please try again.");
-      console.log(err)
     }
   };
 
@@ -85,59 +82,81 @@ const ResetPage = () => {
 
         <form className="mt-6" onSubmit={handlePasswordReset}>
           <div className="flex flex-col space-y-4">
-            <div>
-              <label
-                htmlFor="newPassword"
-                className="block text-sm font-medium"
+          <div className="relative">
+            <label htmlFor="newPassword" className="block text-sm font-medium ">
+              New password
+            </label>
+            <div className="relative mt-1 flex items-center">
+              <FaLock className="text-gray-400 left-3 absolute" />
+              <input
+                type={showPassword ? "text" : "password"}
+                id="newPassword"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className={`block w-full pl-10 pr-3 py-2 text-xs border ${
+                  errors.newPassword ? "border-error" : "border-sec"
+                } rounded-lg shadow-sm focus:outline-none focus:ring-primaryPurple focus:border-primaryPurple sm:text-sm`}
+                placeholder="At least 8 characters"
+                required
+              />
+              <div
+                className="absolute right-3 cursor-pointer"
+                onClick={() => setShowNewPassword(!showNewPassword)}
               >
-                New Password
-              </label>
-              <div className="mt-1 relative">
-                <FaLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <input
-                  type="password"
-                  id="newPassword"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="Enter your new password"
-                  className={`block w-full pl-10 pr-3 py-2 text-xs border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-primaryPurple focus:border-primaryPurple sm:text-sm
-                ${errors.newPassword ? "border-error text-error" : ""}`}
-                  required
-                />
+                {showNewPassword ? (
+                  <FaEyeSlash className="text-gray-500" />
+                ) : (
+                  <FaEye className="text-gray-500" />
+                )}
               </div>
-              {errors.newPassword && (
-                <p className="mt-2 text-sm text-red-600">
-                  {errors.newPassword}
-                </p>
-              )}
             </div>
+            {errors.newPassword && (
+              <p className="text-error flex items-center space-x-4 text-xs mt-1">
+                <IoInformationCircleOutline />
+                {errors.newPassword}
+              </p>
+            )}
+          </div>
 
-            <div>
-              <label
-                htmlFor="confirmPassword"
-                className="block text-sm font-medium"
+          {/* Confirm Password Input */}
+          <div className="relative">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium "
+            >
+              Confirm Password
+            </label>
+            <div className="relative mt-1 flex items-center">
+              <FaLock className="text-gray-400 left-3 absolute" />
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                id="confirmPassword"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className={`block w-full pl-10 pr-3 py-2 text-xs border ${
+                  errors.confirmPassword ? "border-error" : "border-gray-300"
+                } rounded-lg shadow-sm focus:outline-none focus:ring-primaryPurple focus:border-primaryPurple sm:text-sm`}
+                placeholder="At least 8 characters"
+                required
+              />
+              <div
+                className="absolute right-3 cursor-pointer"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
-                Confirm Password
-              </label>
-              <div className="mt-1 relative">
-                <FaLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Confirm your new password"
-                  className={`block w-full pl-10 pr-3 py-2 text-xs border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-primaryPurple focus:border-primaryPurple sm:text-sm
-                ${errors.confirmPassword ? "border-error text-error" : ""}`}
-                  required
-                />
+                {showConfirmPassword ? (
+                  <FaEyeSlash className="text-gray-500" />
+                ) : (
+                  <FaEye className="text-gray-500" />
+                )}
               </div>
-              {errors.confirmPassword && (
-                <p className="mt-2 text-sm text-red-600">
-                  {errors.confirmPassword}
-                </p>
-              )}
             </div>
+            {errors.confirmPassword && (
+              <p className="text-error flex items-center space-x-4 text-xs mt-1">
+                <IoInformationCircleOutline />
+                {errors.confirmPassword}
+              </p>
+            )}
+          </div>
 
             <button
               type="submit"
