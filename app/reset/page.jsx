@@ -5,7 +5,7 @@ import Link from "next/link";
 import { FaLock } from "react-icons/fa";
 
 import logo from "../assets/logo.svg"
-// import logo from "../assets/logo.svg";
+import useRouter from "next/navigation"
 import Image from "next/image";
 import { IoInformationCircleOutline } from "react-icons/io5";
 
@@ -18,7 +18,7 @@ const ResetPage = () => {
     confirmPassword: "",
   });
   const [message, setMessage] = useState(null);
-  const router = useRo9uter();
+  const router = useRouter();
   const { token } = router.query; // Extract token from query parameters
 
   // Ensure token is available before continuing

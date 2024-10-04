@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/client";
 import Link from "next/link";
 import { FaLock } from "react-icons/fa";
-
+import { useRouter } from "next/navigation";
 import logo from "../../assets/logo.svg"
 // import logo from "../assets/logo.svg";
 import Image from "next/image";
@@ -18,7 +18,7 @@ const ResetPage = () => {
     confirmPassword: "",
   });
   const [message, setMessage] = useState(null);
-  const router = useRo9uter();
+  const router = useRouter();
   const { token } = router.query; // Extract token from query parameters
 
   // Ensure token is available before continuing
