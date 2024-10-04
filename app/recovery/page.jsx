@@ -1,5 +1,5 @@
 "use client";
-import { useState} from "react";
+import { useState, Suspense} from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/client";
 import { FaEnvelope } from "react-icons/fa";
@@ -8,16 +8,16 @@ import Image from "next/image";
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { useSearchParams} from "next/navigation";
 
-// const RecoverPage = () => {
-//   return (
-//     <div>
-//       <h1>Reset Password Page</h1>
-//       <Suspense fallback={<p>Loading...</p>}>
-//         <PasswordRecovery />
-//       </Suspense>
-//     </div>
-//   );
-// };
+const RecoverPage = () => {
+  return (
+    <div>
+      <h1>Reset Password Page</h1>
+      <Suspense fallback={<p>Loading...</p>}>
+        <PasswordRecovery />
+      </Suspense>
+    </div>
+  );
+};
 const PasswordRecovery = () => {
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState({ email: "" });
@@ -129,4 +129,4 @@ const PasswordRecovery = () => {
   );
 };
 
-export default PasswordRecovery;
+export default RecoverPage;
