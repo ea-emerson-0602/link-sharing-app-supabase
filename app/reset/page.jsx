@@ -89,7 +89,7 @@ const ResetPage = () => {
             <div className="relative mt-1 flex items-center">
               <FaLock className="text-gray-400 left-3 absolute" />
               <input
-                type={showPassword ? "text" : "password"}
+                type={showNewPassword ? "text" : "password"}
                 id="newPassword"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
