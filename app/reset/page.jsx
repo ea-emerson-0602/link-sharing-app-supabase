@@ -97,7 +97,7 @@ const ResetPage = () => {
                   errors.newPassword ? "border-error" : "border-sec"
                 } rounded-lg shadow-sm focus:outline-none focus:ring-primaryPurple focus:border-primaryPurple sm:text-sm`}
                 placeholder="At least 8 characters"
-                required
+                required 
               />
               <div
                 className="absolute right-3 cursor-pointer"
