@@ -17,10 +17,7 @@ const LoginPage = () => {
   });
   const [error, setError] = useState<string | null>(null);
   
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   
-  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     setErrors({ email: "", password: "" });
@@ -30,6 +27,11 @@ const LoginPage = () => {
       email: "",
       password: "",
     };
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+
+
 
     if (emailRegex.test(email)) {
       validationErrors.email = "Invalid email format.";
