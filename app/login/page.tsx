@@ -33,11 +33,11 @@ const LoginPage = () => {
 
 
 
-    if (emailRegex.test(email)) {
+    if (!emailRegex.test(email)) {
       validationErrors.email = "Invalid email format.";
     }
 
-    if (passwordRegex.test(password)) {
+    if (!passwordRegex.test(password)) {
       validationErrors.password =
         "Password must contain at least 8 characters, including letters and numbers.";
     }
