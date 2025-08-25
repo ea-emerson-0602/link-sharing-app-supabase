@@ -21,7 +21,7 @@ const ResetPage = () => {
 
   // ✅ Ensure Supabase can recover the session from the access_token in URL
   useEffect(() => {
-    supabase.auth.onAuthStateChange(async (event, session) => {
+    supabase.auth.onAuthStateChange(async (event) => {
       if (event === "PASSWORD_RECOVERY") {
         console.log("Password recovery session started");
       }
