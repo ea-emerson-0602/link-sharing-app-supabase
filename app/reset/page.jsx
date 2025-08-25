@@ -14,44 +14,36 @@ const ResetPage = () => {
     newPassword: "",
     confirmPassword: "",
   });
-  const [message, setMessage] = useState(null);
+  const [message, setMessage] = useState<string | null>(null);
 
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-
-  // 🔑 Capture recovery session from Supabase after clicking email link
+  // ✅ Ensure Supabase can recover the session from the access_token in URL
   useEffect(() => {
-    const handleRecovery = async () => {
-      const { data, error } = await supabase.auth.getSession();
-      if (error || !data.session) {
-        console.warn("No active recovery session found ❌");
-      } else {
-        console.log("Recovery session established ✅", data.session);
+    supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === "PASSWORD_RECOVERY") {
+        console.log("Password recovery session started");
       }
-    };
-
-    handleRecovery();
+    });
   }, []);
 
-  const handlePasswordReset = async (e) => {
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+
+  const handlePasswordReset = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({ newPassword: "", confirmPassword: "" });
     setMessage(null);
 
-    const validationErrors = {
-      newPassword: "",
-      confirmPassword: "",
-    };
-
+    // validation
     if (!passwordRegex.test(newPassword)) {
-      validationErrors.newPassword =
-        "Password must contain at least 8 characters, including letters and numbers.";
-      setErrors(validationErrors);
+      setErrors((prev) => ({
+        ...prev,
+        newPassword:
+          "Password must contain at least 8 characters, including letters and numbers.",
+      }));
       return;
     }
-
     if (newPassword !== confirmPassword) {
       setErrors((prev) => ({
         ...prev,
@@ -61,6 +53,7 @@ const ResetPage = () => {
     }
 
     try {
+      // ✅ Now that the session is restored, this works
       const { error } = await supabase.auth.updateUser({
         password: newPassword,
       });
@@ -68,7 +61,7 @@ const ResetPage = () => {
       if (error) {
         setMessage("Error resetting password: " + error.message);
       } else {
-        setMessage("✅ Password has been reset successfully! You can now log in.");
+        setMessage("Password has been reset successfully!");
       }
     } catch (err) {
       setMessage("Something went wrong. Please try again.");
@@ -102,7 +95,7 @@ const ResetPage = () => {
           <div className="flex flex-col space-y-4">
             {/* New Password */}
             <div className="relative">
-              <label htmlFor="newPassword" className="block text-sm font-medium">
+              <label htmlFor="newPassword" className="block text-sm font-medium ">
                 New password
               </label>
               <div className="relative mt-1 flex items-center">
@@ -141,7 +134,7 @@ const ResetPage = () => {
             <div className="relative">
               <label
                 htmlFor="confirmPassword"
-                className="block text-sm font-medium"
+                className="block text-sm font-medium "
               >
                 Confirm Password
               </label>
@@ -198,6 +191,5 @@ const ResetPage = () => {
     </div>
   );
 };
-
 
 export default ResetPage;
