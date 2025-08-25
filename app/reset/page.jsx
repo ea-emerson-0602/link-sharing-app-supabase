@@ -14,7 +14,7 @@ const ResetPage = () => {
     newPassword: "",
     confirmPassword: "",
   });
-  const [message, setMessage] = useState<string | null>(null);
+  const [message, setMessage] = useState(null);
 
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -30,7 +30,7 @@ const ResetPage = () => {
 
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
-  const handlePasswordReset = async (e: React.FormEvent) => {
+  const handlePasswordReset = async (e) => {
     e.preventDefault();
     setErrors({ newPassword: "", confirmPassword: "" });
     setMessage(null);
